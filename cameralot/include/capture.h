@@ -1,0 +1,84 @@
+#pragma once
+
+#include <opencv2/videoio.hpp>
+
+/**************************************************************************************************
+ * C
+ *************************************************************************************************/
+extern "C" enum ReadStatus
+{
+    Success = 0,
+    NotOpen = 1,
+    ReadFailed = 2,
+    RetrieveFailed = 3,
+    EmptyFrame = 4,
+    EncodingFailed = 5,
+};
+
+extern "C" struct ByteBufferShare
+{
+    uchar *buffer;
+    size_t length;
+};
+
+/**************************************************************************************************
+ * C++
+ *************************************************************************************************/
+
+namespace cameralot::capture {
+    class CameraFeed
+    {
+    public:
+        bool is_opened() const noexcept;
+
+        bool open(int index, int api_preference = cv::CAP_ANY) noexcept;
+
+        ReadStatus read(uint32_t width, uint32_t height, const char *ext) noexcept;
+
+        bool get_buffer(ByteBufferShare *buffer) noexcept;
+
+
+    private:
+        cv::VideoCapture videoCapture;
+
+        std::vector<uchar> image_buffer;
+
+        cv::Mat reading_frame;
+
+        cv::Mat output_frame;
+
+        bool has_image;
+
+
+    public:
+        CameraFeed() noexcept: videoCapture(), image_buffer(), has_image(false) {}
+    };
+}
+
+/**************************************************************************************************
+ * C
+ *************************************************************************************************/
+extern "C" cameralot::capture::CameraFeed *camera_feed_create();
+extern "C" void camera_feed_delete(cameralot::capture::CameraFeed *feed);
+
+extern "C" bool camera_feed_open_api_pref(
+        cameralot::capture::CameraFeed *cameraFeed,
+        int32_t index,
+        int32_t api
+);
+
+extern "C" bool camera_feed_open(cameralot::capture::CameraFeed *cameraFeed, int32_t index);
+
+extern "C" bool camera_feed_is_opened(cameralot::capture::CameraFeed *cameraFeed);
+
+extern "C" ReadStatus camera_feed_read(
+        cameralot::capture::CameraFeed *cameraFeed,
+        uint32_t width,
+        uint32_t height,
+        char *ext
+);
+
+extern "C" bool camera_feed_get_buf(
+        cameralot::capture::CameraFeed *cameraFeed,
+        ByteBufferShare *buf
+);
