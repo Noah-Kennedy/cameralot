@@ -9,4 +9,5 @@
 # Jetbrains IDE project files
 /.idea
 
+# Images directory
 /images
