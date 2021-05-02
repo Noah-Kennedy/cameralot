@@ -4,9 +4,9 @@
 # CMake output
 /cameralot/cmake-build-debug
 /cameralot/cmake-build-release
+/cameralot/build
 
 # Jetbrains IDE project files
 /.idea
 
 /images
-Do not commit test images
