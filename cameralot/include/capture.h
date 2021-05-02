@@ -21,6 +21,14 @@ extern "C" struct ByteBufferShare
     size_t length;
 };
 
+extern "C" struct TimerData
+{
+    uint32_t grab_millis;
+    uint32_t retrieve_millis;
+    uint32_t resize_millis;
+    uint32_t encode_millis;
+};
+
 /**************************************************************************************************
  * C++
  *************************************************************************************************/
@@ -33,7 +41,7 @@ namespace cameralot::capture {
 
         bool open(int index, int api_preference = cv::CAP_ANY) noexcept;
 
-        ReadStatus read(uint32_t width, uint32_t height, const char *ext) noexcept;
+        ReadStatus read(uint32_t width, uint32_t height, const char *ext, TimerData *td) noexcept;
 
         bool get_buffer(ByteBufferShare *buffer) noexcept;
 
@@ -75,7 +83,8 @@ extern "C" ReadStatus camera_feed_read(
         cameralot::capture::CameraFeed *cameraFeed,
         uint32_t width,
         uint32_t height,
-        char *ext
+        char *ext,
+        TimerData *td
 );
 
 extern "C" bool camera_feed_get_buf(

@@ -44,11 +44,12 @@ impl CameraFeed {
         }
     }
 
-    pub fn read(&mut self, width: u32, height: u32, ext: &str) -> Result<(), CameraFeedError> {
+    pub fn read(&mut self, width: u32, height: u32, ext: &str, td: &mut TimerData) -> Result<(), 
+        CameraFeedError> {
         let c_str = CString::new(ext).unwrap();
 
         let status = unsafe {
-            camera_feed_read(self.internal, width, height, c_str.as_ptr())
+            camera_feed_read(self.internal, width, height, c_str.as_ptr(), td as *mut TimerData)
         };
 
         match status {

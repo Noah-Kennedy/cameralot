@@ -7,6 +7,14 @@ pub struct ByteBufferShare {
 }
 
 #[repr(C)]
+pub struct TimerData {
+    pub grab_millis: u32,
+    pub retrieve_millis: u32,
+    pub resize_millis: u32,
+    pub encode_millis: u32,
+}
+
+#[repr(C)]
 #[derive(Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub enum ReadStatus {
     Success = 0,
@@ -29,6 +37,7 @@ extern {
         width: u32,
         height: u32,
         ext: *const raw::c_char,
+        td: *mut TimerData,
     ) -> ReadStatus;
     pub fn camera_feed_get_buf(feed: *mut raw::c_void, buf: *mut ByteBufferShare) -> bool;
 }

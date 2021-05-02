@@ -27,9 +27,9 @@ bool camera_feed_is_opened(CameraFeed *cameraFeed)
     return cameraFeed->is_opened();
 }
 
-ReadStatus camera_feed_read(CameraFeed *cameraFeed, uint32_t width, uint32_t height, char *ext)
+ReadStatus camera_feed_read(CameraFeed *cameraFeed, uint32_t width, uint32_t height, char *ext, TimerData* td)
 {
-    return cameraFeed->read(width, height, ext);
+    return cameraFeed->read(width, height, ext, td);
 }
 
 bool camera_feed_get_buf(CameraFeed *cameraFeed, ByteBufferShare *buf)
