@@ -1,9 +1,9 @@
 use std::ffi::CString;
 use std::os::raw;
-
-use crate::cameralot_capture_raw::*;
 use std::ptr::null_mut;
 use std::slice::from_raw_parts;
+
+use crate::cameralot_capture_raw::*;
 
 pub struct CameraFeed {
     internal: *mut raw::c_void,
@@ -16,7 +16,7 @@ pub enum CameraFeedError {
     RetrieveFailed,
     EmptyFrame,
     EncodingFailed,
-    NoFrame
+    NoFrame,
 }
 
 impl CameraFeed {
@@ -44,13 +44,19 @@ impl CameraFeed {
         }
     }
 
-    pub fn read(&mut self, width: u32, height: u32, ext: &str, td: &mut TimerData) -> Result<(), 
-        CameraFeedError> {
+    /// # Safety
+    /// This function is only safe if there are no living references to the camera feed buffer.
+    pub unsafe fn read(
+        &mut self,
+        width: u32,
+        height: u32,
+        ext: &str,
+        td: &mut TimerData,
+    ) -> Result<(), CameraFeedError> {
         let c_str = CString::new(ext).unwrap();
 
-        let status = unsafe {
-            camera_feed_read(self.internal, width, height, c_str.as_ptr(), td as *mut TimerData)
-        };
+        let status = camera_feed_read(
+            self.internal, width, height, c_str.as_ptr(), td as *mut TimerData);
 
         match status {
             ReadStatus::Success => Ok(()),

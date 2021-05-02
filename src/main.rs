@@ -31,7 +31,11 @@ fn main() {
         let path = format!("images/{}{}", i, FILE_FORMAT);
 
         let timer = std::time::Instant::now();
-        cap.read(WIDTH, HEIGHT, FILE_FORMAT, &mut td).unwrap();
+
+        unsafe {
+            cap.read(WIDTH, HEIGHT, FILE_FORMAT, &mut td).unwrap();
+        }
+
         let time = timer.elapsed().as_millis();
 
         println!("{}:\t{} millis", i, time);
