@@ -39,7 +39,7 @@ namespace cameralot::capture {
     public:
         bool is_opened() const noexcept;
 
-        bool open(int index, int api_preference = cv::CAP_ANY) noexcept;
+        bool open(int index, int api_preference = cv::CAP_V4L2) noexcept;
 
         ReadStatus read(uint32_t width, uint32_t height, const char *ext, TimerData *td) noexcept;
 
