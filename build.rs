@@ -1,11 +1,15 @@
 fn main() {
-    println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-changed=cameralot");
+    // invoke cmake and ninja
+    let mut cfg = cmake::Config::new("cameralot");
 
-    let dst = cmake::Config::new("cameralot")
-        .generator("Ninja")
-        .build()
-        .join("build");
+    let dst = if cfg!(target_os = "windows") {
+        &mut cfg
+    } else {
+        cfg.generator("Ninja")
+    }.build().join("lib");
+
+    // only see this if run with -vv
+    println!("Path is {}\n", dst.to_str().unwrap());
 
     println!("cargo:rustc-link-search=native={}", dst.display());
     println!("cargo:rustc-link-lib=static=cameralot-capture");
