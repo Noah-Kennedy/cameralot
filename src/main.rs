@@ -1,11 +1,9 @@
 use std::fs;
-use std::os::raw;
 use std::process::Command;
-use std::ptr::null_mut;
-use std::slice::from_raw_parts;
 
-use crate::cameralot_capture::*;
+use crate::cameralot_capture::CameraFeed;
 
+pub mod cameralot_capture_raw;
 pub mod cameralot_capture;
 
 fn main() {
@@ -13,34 +11,21 @@ fn main() {
         .arg("-f")
         .arg("images/*").spawn().unwrap().wait().unwrap();
 
-    unsafe {
-        let cap = cameralot_capture::camera_feed_create();
+    let mut cap = CameraFeed::new();
 
-        camera_feed_open(cap, 0);
+    cap.open(0);
 
-        let mut buf = ByteBufferShare {
-            buffer: null_mut(),
-            length: 0,
-        };
+    for i in 0..100 {
+        let path = format!("images/{}.png", i);
 
-        for i in 0..100 {
-            let path = format!("images/{}.png", i);
+        let timer = std::time::Instant::now();
+        cap.read(1280, 720, ".png").unwrap();
+        let time = timer.elapsed().as_millis();
 
-            let status = camera_feed_read(
-                cap,
-                1280, 720,
-                ".png\0".as_ptr() as *const raw::c_char,
-            );
+        println!("{}:\t{} millis", i, time);
 
-            println!("{}: {:?}", i, status);
+        let s = cap.get_buf().unwrap();
 
-            if status == ReadStatus::Success {
-                let _ = camera_feed_get_buf(cap, (&mut buf) as *mut ByteBufferShare);
-                let s = from_raw_parts(buf.buffer, buf.length);
-                fs::write(&path, s).unwrap();
-            }
-        }
-
-        camera_feed_delete(cap);
+        fs::write(&path, s).unwrap();
     }
 }
