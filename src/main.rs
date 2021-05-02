@@ -35,10 +35,10 @@ fn main() {
         let time = timer.elapsed().as_millis();
 
         println!("{}:\t{} millis", i, time);
-        println!("\tGrab: {}", td.grab_millis);
-        println!("\tRetrieve: {}", td.retrieve_millis);
-        println!("\tResize: {}", td.resize_millis);
-        println!("\tEncode: {}", td.encode_millis);
+        println!("\tGrab: {} millis", td.grab_millis);
+        println!("\tRetrieve: {} millis", td.retrieve_millis);
+        println!("\tResize: {} millis", td.resize_millis);
+        println!("\tEncode: {} millis", td.encode_millis);
 
         let s = cap.get_buf().unwrap();
 
