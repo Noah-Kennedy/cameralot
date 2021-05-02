@@ -60,13 +60,13 @@ impl CameraFeed {
             ReadStatus::EncodingFailed => Err(CameraFeedError::EncodingFailed),
         }
     }
-    
+
     pub fn get_buf(&self) -> Result<&[u8], CameraFeedError> {
         let mut share = ByteBufferShare { buffer: null_mut(), length: 0 };
 
         unsafe {
             let status = camera_feed_get_buf(self.internal, (&mut share) as *mut ByteBufferShare);
-            
+
             if status {
                 let s = from_raw_parts(share.buffer, share.length);
 
